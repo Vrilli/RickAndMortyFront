@@ -1,0 +1,59 @@
+<div
+  class="w-screen h-screen bg-cover bg-center flex items-center justify-center"
+  style="background-image: url('/fondo.jpg')"
+>
+  <div class="absolute inset-0 bg-opacity-50 z-0"></div>
+  <div
+    class="relative z-10 flex w-11/12 max-w-6xl h-4/5 bg-white bg-opacity-90 rounded-lg shadow-lg overflow-hidden"
+  >
+    <div class="w-full md:w-1/2 p-8 flex flex-col justify-center">
+      <h1 class="text-4xl font-semibold text-center text-gray-800 mb-6">
+        Regístrate
+      </h1>
+      <form class="space-y-4" (ngSubmit)="register()">
+        <input
+          [(ngModel)]="username"
+          name="username"
+          placeholder="Usuario"
+          required
+          class="w-full px-4 py-2 rounded bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <input
+          [(ngModel)]="email"
+          name="email"
+          type="email"
+          placeholder="Correo electrónico"
+          required
+          class="w-full px-4 py-2 rounded bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <input
+          [(ngModel)]="password"
+          name="password"
+          type="password"
+          placeholder="Contraseña"
+          required
+          class="w-full px-4 py-2 rounded bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <button
+          class="w-full bg-[#04BFBF] hover:bg-[#68BF50] text-white font-semibold py-2 px-4 rounded transition"
+          type="submit"
+        >
+          Registrarse
+        </button>
+      </form>
+      <p *ngIf="error" class="text-red-500 mt-4 text-end font-bold">
+        {{ error }}
+      </p>
+      <a
+        [routerLink]="['/login']"
+        class="pt-5 block text-center cursor-pointer text-[#68BF50] hover:text-[#04BFBF] underline"
+      >
+        ¿Ya tienes cuenta? Inicia sesión
+      </a>
+    </div>
+    <div
+      class="w-1/2 bg-cover bg-center hidden md:block"
+      style="background-image: url('/registeriz.jpg')"
+    ></div>
+  </div>
+</div>

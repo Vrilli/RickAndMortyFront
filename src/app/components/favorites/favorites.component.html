@@ -1,0 +1,125 @@
+<div
+  class="min-h-screen py-16 px-20 w-full bg-center"
+  style="background-image: url('/characters.jpg')"
+>
+  <!-- Navbar -->
+  <header
+    class="fixed bg-[#04bfbf74] w-full z-10 top-0 left-0 flex justify-between items-center p-4"
+  >
+    <nav class="flex items-center gap-4 text-white">
+      <a
+        class="p-1 cursor-pointer font-semibold rounded"
+        [routerLink]="['/characters']"
+        routerLinkActive="bg-green-700"
+        [routerLinkActiveOptions]="{ exact: true }"
+        [ngClass]="{ 'bg-[#68BF50]': !isActive('/characters') }"
+        >Personajes</a
+      >
+      <a
+        class="p-1 cursor-pointer font-semibold rounded"
+        [routerLink]="['/episodes']"
+        routerLinkActive="bg-green-700"
+        [routerLinkActiveOptions]="{ exact: true }"
+        [ngClass]="{ 'bg-[#68BF50]': !isActive('/episodes') }"
+        >Episodios</a
+      >
+      <a
+        class="p-1 cursor-pointer font-semibold rounded"
+        [routerLink]="['/favorites']"
+        routerLinkActive="bg-green-700"
+        [routerLinkActiveOptions]="{ exact: true }"
+        [ngClass]="{ 'bg-[#68BF50]': !isActive('/favorites') }"
+        >Favoritos</a
+      >
+    </nav>
+
+    <button
+      (click)="logout()"
+      class="bg-red-500 text-white py-2 px-6 rounded hover:bg-red-600 transition duration-200"
+    >
+      Cerrar sesión
+    </button>
+  </header>
+
+  <h1 class="text-3xl font-bold text-white py-16">Mis Favoritos</h1>
+
+  <!-- Personajes favoritos -->
+  <div *ngIf="favoriteCharacters.length > 0">
+    <h1
+      class="text-4xl font-bold uppercase text-center text-white border-b-2 border-[#04bfbf] py-4"
+    >
+      Personajes
+    </h1>
+    <div class="flex items-center justify-center py-5">
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 justify-center gap-4"
+      >
+        <div
+          *ngFor="let character of favoriteCharacters"
+          class="card w-full p-6 border shadow bg-white/70 border-[#04bfbf] rounded-xl transition transform hover:-translate-y-1 hover:shadow-lg"
+        >
+          <img
+            [src]="character.image"
+            [alt]="character.name"
+            class="w-full h-48 object-cover rounded mb-4 border border-[#68BF50] shadow"
+          />
+          <p class="text-lg text-white text-center font-semibold mb-1">
+            {{ character.name }}
+          </p>
+          <button
+            (click)="removeCharacter(character)"
+            class="mt-2 w-full bg-red-500 hover:bg-red-600 text-white py-1 rounded"
+          >
+            Quitar de Favoritos
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Episodios favoritos -->
+  <div *ngIf="favoriteEpisodes.length > 0" class="mt-10">
+    <h1
+      class="text-4xl font-bold uppercase text-center text-white border-b-2 border-[#04bfbf] py-4"
+    >
+      Episodios
+    </h1>
+    <div class="flex items-center justify-center py-5">
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 justify-center gap-4"
+      >
+        <div
+          *ngFor="let episode of favoriteEpisodes"
+          class="card w-full p-6 border shadow bg-white/70 border-[#04bfbf] rounded-xl transition transform hover:-translate-y-1 hover:shadow-lg"
+        >
+          <ng-container *ngIf="episode.firstCharacter?.image">
+            <img
+              [src]="episode.firstCharacter.image"
+              [alt]="'Imagen de ' + episode.firstCharacter.name"
+              class="w-full h-48 object-cover rounded mb-4 border border-[#68BF50] shadow"
+            />
+            <p class="text-lg text-white text-center font-semibold mb-1">
+              {{ episode.firstCharacter.name }}
+            </p>
+          </ng-container>
+
+          <p class="text-lg text-white font-semibold mb-1">
+            {{ episode.episode }} - {{ episode.name }}
+          </p>
+          <button
+            (click)="removeEpisode(episode)"
+            class="mt-2 w-full bg-red-500 hover:bg-red-600 text-white py-1 rounded"
+          >
+            Quitar de Favoritos
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    *ngIf="favoriteCharacters.length === 0 && favoriteEpisodes.length === 0"
+    class="text-center text-gray-300 mt-10"
+  >
+    <p>No tienes favoritos aún. Ve y agrega algunos.</p>
+  </div>
+</div>

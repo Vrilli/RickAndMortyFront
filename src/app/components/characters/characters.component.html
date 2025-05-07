@@ -1,0 +1,178 @@
+<div
+  class="min-h-screen py-16 px-20 w-full bg-center"
+  style="background-image: url('/characters.jpg')"
+>
+  <div class="text-center text-6xl text-[#68BF50] pt-80" *ngIf="isLoading">
+    Cargando personajes...
+  </div>
+
+  <div class="text-center text-6xl text-red-500 pt-80" *ngIf="error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!isLoading && !error">
+    <!-- Navbar -->
+    <header
+      class="fixed bg-[#04bfbf74] w-full z-10 top-0 left-0 flex justify-between items-center p-4"
+    >
+      <nav class="flex items-center gap-4 text-white">
+        <a
+          class="p-1 cursor-pointer font-semibold rounded"
+          [routerLink]="['/characters']"
+          routerLinkActive="bg-green-700"
+          [routerLinkActiveOptions]="{ exact: true }"
+          [ngClass]="{ 'bg-[#68BF50]': !isActive('/characters') }"
+          >Personajes</a
+        >
+        <a
+          class="p-1 cursor-pointer font-semibold rounded"
+          [routerLink]="['/episodes']"
+          routerLinkActive="bg-green-700"
+          [routerLinkActiveOptions]="{ exact: true }"
+          [ngClass]="{ 'bg-[#68BF50]': !isActive('/episodes') }"
+          >Episodios</a
+        >
+        <a
+          class="p-1 cursor-pointer font-semibold rounded"
+          [routerLink]="['/favorites']"
+          routerLinkActive="bg-green-700"
+          [routerLinkActiveOptions]="{ exact: true }"
+          [ngClass]="{ 'bg-[#68BF50]': !isActive('/favorites') }"
+          >Favoritos</a
+        >
+      </nav>
+
+      <button
+        (click)="logout()"
+        class="bg-red-500 text-white py-2 px-6 rounded hover:bg-red-600 transition duration-200"
+      >
+        Cerrar sesión
+      </button>
+    </header>
+
+    <div
+      *ngIf="filteredCharacters.length === 0"
+      class="text-center text-xl text-red-500 pt-10"
+    >
+      No hay personajes disponibles.
+    </div>
+
+    <!-- Search input -->
+    <div>
+      <h1 class="text-3xl font-bold text-white pt-16">PERSONAJES</h1>
+      <div class="w-full text-white max-w-xs py-10 mx-auto relative">
+        <input
+          id="search"
+          type="text"
+          [(ngModel)]="searchTerm"
+          (input)="filterCharacters()"
+          placeholder="Buscar por nombre....."
+          class="w-full border border-gray-300 rounded-full py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-[#68BF50] focus:border-transparent transition duration-200"
+        />
+      </div>
+    </div>
+    <!-- cards -->
+    <div class="flex items-center justify-center">
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 justify-center gap-4"
+      >
+        <div
+          *ngFor="let character of pagedCharacters"
+          class="card w-full p-6 border rounded shadow bg-white bg-opacity-90"
+        >
+          <h2 class="font-bold text-lg mb-2 text-[#68BF50]">
+            {{ character.name }}
+          </h2>
+          <div class="flex flex-col items-center mb-4">
+            <img
+              [src]="character.image"
+              [alt]="character.name"
+              class="w-full h-48 object-cover rounded mb-4 border border-[#68BF50] shadow"
+            />
+            <p class="text-base mb-2">Estado: {{ character.status }}</p>
+          </div>
+          <div class="flex flex-col items-center">
+            <button
+              (click)="openCharacterModal(character)"
+              class="text-[#04bfbf] hover:underline mb-2"
+            >
+              Ver detalles
+            </button>
+            <button
+              *ngIf="!isFavorite(character)"
+              (click)="addToFavorites(character)"
+              class="px-3 py-1 bg-[#68BF50] text-white rounded"
+            >
+              Añadir a favoritos
+            </button>
+
+            <button
+              *ngIf="isFavorite(character)"
+              (click)="removeFromFavorites(character)"
+              class="px-3 py-1 bg-red-500 text-white rounded"
+            >
+              Quitar de favoritos
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- pagination -->
+    <div
+      class="pagination-controls text-white font-semibold flex justify-center items-center gap-4 mt-6"
+    >
+      <button
+        (click)="previousPage()"
+        [disabled]="currentPage === 1"
+        class="px-3 py-1 bg-[#68BF50] rounded disabled:opacity-50"
+      >
+        Anterior
+      </button>
+      <span>Página {{ currentPage }} de {{ totalPages }}</span>
+      <button
+        (click)="nextPage()"
+        [disabled]="currentPage === totalPages"
+        class="px-3 py-1 bg-[#68BF50] rounded disabled:opacity-50"
+      >
+        Siguiente
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div
+    *ngIf="selectedCharacter"
+    class="fixed inset-0 bg-white/20 backdrop-blur-sm flex items-center justify-center z-50"
+  >
+    <div class="bg-white text-black p-8 rounded-lg w-96 relative shadow-lg">
+      <button
+        (click)="closeModal()"
+        class="absolute top-2 right-2 text-[#68BF50] cursor-pointer hover:text-red-500"
+      >
+        ✖
+      </button>
+
+      <h2 class="text-xl text-center uppercase font-bold mb-4">
+        {{ selectedCharacter.name }}
+      </h2>
+
+      <div class="flex items-center gap-4">
+        <img
+          [src]="selectedCharacter.image"
+          alt="{{ selectedCharacter.name }} image"
+          class="w-24 h-24 rounded-full object-cover"
+        />
+        <div>
+          <p><strong>Estado:</strong> {{ selectedCharacter.status }}</p>
+          <p><strong>Especie:</strong> {{ selectedCharacter.species }}</p>
+          <p><strong>Género:</strong> {{ selectedCharacter.gender }}</p>
+          <p>
+            <strong>Origen:</strong>
+            {{ selectedCharacter.origin?.name || "Desconocido" }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

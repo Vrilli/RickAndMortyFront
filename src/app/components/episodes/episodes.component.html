@@ -1,0 +1,212 @@
+<div
+  class="min-h-screen py-16 w-full bg-center"
+  style="background-image: url('/characters.jpg')"
+>
+  <div class="text-center text-6xl text-[#68BF50] pt-80" *ngIf="isLoading">
+    Cargando episodios...
+  </div>
+
+  <div class="text-center text-6xl text-red-500 pt-80" *ngIf="error">
+    {{ error }}
+  </div>
+
+  <!-- Navbar -->
+  <header
+    class="fixed bg-[#04bfbf74] w-full z-10 top-0 left-0 flex justify-between items-center p-4"
+  >
+    <nav class="flex items-center gap-4 text-white">
+      <a
+        class="p-1 cursor-pointer font-semibold rounded"
+        [routerLink]="['/characters']"
+        routerLinkActive="bg-green-700"
+        [routerLinkActiveOptions]="{ exact: true }"
+        [ngClass]="{ 'bg-[#68BF50]': !isActive('/characters') }"
+        >Personajes</a
+      >
+      <a
+        class="p-1 cursor-pointer font-semibold rounded"
+        [routerLink]="['/episodes']"
+        routerLinkActive="bg-green-700"
+        [routerLinkActiveOptions]="{ exact: true }"
+        [ngClass]="{ 'bg-[#68BF50]': !isActive('/episodes') }"
+        >Episodios</a
+      >
+      <a
+        class="p-1 cursor-pointer font-semibold rounded"
+        [routerLink]="['/favorites']"
+        routerLinkActive="bg-green-700"
+        [routerLinkActiveOptions]="{ exact: true }"
+        [ngClass]="{ 'bg-[#68BF50]': !isActive('/favorites') }"
+        >Favoritos</a
+      >
+    </nav>
+
+    <button
+      (click)="logout()"
+      class="bg-red-500 text-white py-2 px-6 rounded hover:bg-red-600 transition duration-200"
+    >
+      Cerrar sesión
+    </button>
+  </header>
+
+  <div class="min-h-screen bg-cover bg-center py-16">
+    <div class="px-10 py-8">
+      <h1 class="text-4xl text-white font-bold">Episodios</h1>
+      <!-- Filters -->
+      <div
+        class="filters flex flex-col md:flex-row justify-between items-center gap-6 py-4"
+      >
+        <div class="flex items-center gap-3">
+          <label class="text-white" for="season-select"
+            >Filtrar por grupo:</label
+          >
+          <select
+            id="season-select"
+            [(ngModel)]="selectedSeason"
+            (change)="filterEpisodes()"
+            class="border rounded p-2 text-white"
+          >
+            <option class="text-black" value="">Todos los grupos</option>
+            <option
+              class="text-black"
+              *ngFor="let season of seasons"
+              [value]="season"
+            >
+              {{ season }}
+            </option>
+          </select>
+        </div>
+
+        <div class="w-full max-w-xs">
+          <input
+            type="text"
+            placeholder="Buscar episodios por nombre..."
+            [(ngModel)]="searchTerm"
+            (input)="filterEpisodes()"
+            class="w-full border text-white border-gray-300 rounded-full py-2 pl-4 pr-4 focus:outline-none focus:ring-2 focus:ring-[#68BF50] transition duration-200"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Episodes Grid -->
+    <div class="flex items-center justify-center">
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 justify-center gap-4"
+      >
+        <div
+          class="card w-64 p-6 border rounded shadow bg-white bg-opacity-90"
+          *ngFor="let episode of episodes"
+        >
+          <h2 class="font-bold text-lg mb-2 text-[#68BF50]">
+            {{ episode.episode }} - {{ episode.name }}
+          </h2>
+          <div
+            *ngIf="episode.firstCharacter"
+            class="flex flex-col items-center mb-4"
+          >
+            <img
+              [src]="episode.firstCharacter.image"
+              [alt]="'Imagen de ' + episode.firstCharacter.name"
+              class="w-full h-48 object-cover rounded mb-4 border border-[#68BF50] shadow"
+            />
+            <p class="mt-2 text-gray-700 font-medium">
+              {{ episode.firstCharacter.name }}
+            </p>
+          </div>
+
+          <div class="flex flex-col items-center">
+            <button
+              (click)="openEpisodeModal(episode)"
+              class="text-[#04bfbf] hover:underline mb-2"
+            >
+              Ver detalles
+            </button>
+
+            <button
+              (click)="toggleFavorite(episode)"
+              class="px-3 py-1 rounded text-white transition duration-200"
+              [ngClass]="
+                isFavorite(episode)
+                  ? 'bg-red-500 hover:bg-red-600'
+                  : 'bg-green-500 hover:bg-green-600'
+              "
+            >
+              {{
+                isFavorite(episode)
+                  ? "Quitar de Favoritos"
+                  : "Agregar a Favoritos"
+              }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- pagination -->
+    <div
+      class="pagination-controls text-white font-semibold flex justify-center items-center gap-4 mt-6"
+    >
+      <button
+        (click)="previousPage()"
+        [disabled]="currentPage === 1"
+        class="px-3 py-1 bg-[#68BF50] rounded disabled:opacity-50"
+      >
+        Anterior
+      </button>
+      <span>Página {{ currentPage }} de {{ totalPages }}</span>
+      <button
+        (click)="nextPage()"
+        [disabled]="currentPage === totalPages"
+        class="px-3 py-1 bg-[#68BF50] rounded disabled:opacity-50"
+      >
+        Siguiente
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div
+    *ngIf="selectedEpisode"
+    class="fixed inset-0 bg-white/20 backdrop-blur-sm flex items-center justify-center z-50"
+  >
+    <div class="bg-white text-black p-8 rounded-lg w-96 relative shadow-lg">
+      <button
+        (click)="closeModal()"
+        class="absolute top-2 right-2 text-[#68BF50] cursor-pointer hover:text-red-500"
+      >
+        ✖
+      </button>
+
+      <h2 class="text-xl text-center uppercase font-bold mb-4">
+        {{ selectedEpisode.firstCharacter?.name }}
+      </h2>
+
+      <div class="flex items-center gap-4">
+        <img
+          [src]="selectedEpisode.firstCharacter?.image"
+          alt="Character image"
+          class="w-24 h-24 rounded-full object-cover"
+        />
+        <div>
+          <p>
+            <strong>Estado:</strong>
+            {{ selectedEpisode.firstCharacter?.status }}
+          </p>
+          <p>
+            <strong>Especie:</strong>
+            {{ selectedEpisode.firstCharacter?.species }}
+          </p>
+          <p>
+            <strong>Género:</strong>
+            {{ selectedEpisode.firstCharacter?.gender }}
+          </p>
+          <p>
+            <strong>Origen:</strong>
+            {{ selectedEpisode.firstCharacter?.origin }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
