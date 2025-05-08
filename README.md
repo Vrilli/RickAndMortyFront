@@ -30,9 +30,12 @@ En tu terminal del visual studio code haz lo siguiente:
 
    git clone https://github.com/Vrilli/RickAndMortyFront.git
 
-2. Luego ingresa a la carpeta
+2. Luego ingresa a la carpeta que acabas de clonar con el siguiente comando:
    cd rick-and-morty-app
 
 3. Ejecuta **npm install** para instalar las dependencias del proyecto.
 
 4. Finalmente corre tu aplicación con el comando **ng serve**
+
+5. Ingresa al siguiente link para que puedas ver la app corriendo:
+   http://localhost:4200
