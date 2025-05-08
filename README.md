@@ -1,27 +1,38 @@
 # RickAndMortyApp
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.6.
+Esta aplicación esta desarrollada con **Angular 18** que consume datos de la API de Rick and Morty y permite la visualización de personajes, episodios y agragar a favoritos. Además, incluye funcionalidades de autenticación de usuarios (registro, inicio de sesión, cierre de sesión) utilizando almacenamiento local y de sesión (`localStorage` y `sessionStorage`).
 
-## Development server
+## 🧪 Características principales
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- ✅ Registro e inicio de sesión de usuarios.
+- ✅ Persistencia de sesión mientras el navegador está abierto.
+- ✅ Rutas protegidas que requieren autenticación.
+- ✅ Visualización de personajes, episodios y favoritos.
+- ✅ Diseño responsivo utilizando **Tailwind CSS**.
+- ✅ Botón de cerrar sesión visible en todas las vistas protegidas.
+- ✅ Navegación con indicadores de ruta activa (botones con color dinámico).
 
-## Code scaffolding
+---
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## 🚀 Requisitos previos
 
-## Build
+- [Node.js](https://nodejs.org/) (v18+)
+- [Angular CLI](https://angular.io/cli) (`npm install -g @angular/cli`)
+- Git
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Antes de iniciar a relizar este proceso debes de tener clonado el proyecto Backend, te dejo el link del repositorio (https://github.com/Vrilli/RickAndMortyBack).
 
-## Running unit tests
+## 📦 Instalación
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+En tu terminal del visual studio code haz lo siguiente: 
 
-## Running end-to-end tests
+1. Comando para clonar el repositorio:
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+   git clone https://github.com/Vrilli/RickAndMortyFront.git
 
-## Further help
+2. Luego ingresa a la carpeta
+   cd rick-and-morty-app
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+3. Ejecuta **npm install** para instalar las dependencias del proyecto.
+
+4. Finalmente corre tu aplicación con el comando **ng serve**
